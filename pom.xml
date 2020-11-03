@@ -1,0 +1,41 @@
+<project>
+    
+  <!-- (0) <modelVersion/> -->
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- (1) <parent/> -->
+  <!-- (2) <groupId/> -->
+  <groupId>edu.ucsb.cs156</groupId>
+
+  <!-- (3) <artifactId/> -->
+  <artifactId>demo-spring-boot-console</artifactId>
+
+  <!-- (4) <version/> -->    
+  <version>1.0.0</version>
+
+  <!-- (5) <packaging/> -->
+  <!-- (6) <name/> -->
+  <!-- (7) <description/> -->
+  <!-- (8) <url/> -->
+  <!-- (9) <inceptionYear/> -->
+  <!-- (10) <organization/> -->
+  <!-- (11) <licenses/> -->
+  <!-- (12) <developers/> -->
+  <!-- (13) <contributors/> --> 
+  <!-- (14) <mailingLists/> -->
+  <!-- (15) <prerequisites/> -->
+  <!-- (16) <modules/> -->
+  <!-- (17) <scm/> -->
+  <!-- (18) <issueManagement/> -->
+  <!-- (19) <ciManagement/> -->
+  <!-- (20) <distributionManagement/> -->
+  <!-- (21) <properties/> -->
+  <!-- (22) <dependencyManagement/> -->
+  <!-- (23) <dependencies/> -->
+  <!-- (24) <repositories/> -->
+  <!-- (25) <pluginRepositories/> -->
+  <!-- (26) <build/> -->
+  <!-- (27) <reporting/> -->
+  <!-- (28) <profiles/> -->
+
+</project>
