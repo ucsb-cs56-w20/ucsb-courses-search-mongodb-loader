@@ -5,7 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.Banner;
+import org.springframework.boot.WebApplicationType;
 
+// Bulk of code is from: https://www.baeldung.com/spring-boot-console-app
 
 @SpringBootApplication
 public class SpringConsoleApplication implements CommandLineRunner  {
@@ -14,8 +17,14 @@ public class SpringConsoleApplication implements CommandLineRunner  {
 
     public static void main(String [] args) {
         LOG.info("STARTING THE APPLICATION");
-		SpringApplication.run(SpringConsoleApplication.class, args);
-		LOG.info("APPLICATION FINISHED");
+
+        // For not starting webserver, see: https://www.baeldung.com/spring-boot-no-web-server
+
+        SpringApplication app = new SpringApplication(SpringConsoleApplication.class);
+        app.setWebApplicationType(WebApplicationType.NONE);
+        app.setBannerMode(Banner.Mode.OFF);
+        app.run(args);
+        LOG.info("APPLICATION FINISHED");
     }
 
     /**

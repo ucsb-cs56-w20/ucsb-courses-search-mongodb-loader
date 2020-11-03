@@ -42,7 +42,7 @@
 
     <properties>
         <!-- The main class to start by executing java -jar -->
-        <start-class>edu.ucsb.cs156.spring.console.SpringConsoleApplication</start-class>
+        <mainClass>edu.ucsb.cs156.spring.console.SpringConsoleApplication</mainClass>
         <java.version>11</java.version>
     </properties>
 
@@ -150,43 +150,5 @@
 
     <!-- (27) <reporting/> -->
     <!-- (28) <profiles/> -->
-
-    <profiles>
-        <profile>
-            <id>autoconfiguration</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>integration-test</phase>
-                                <goals>
-                                    <goal>test</goal>
-                                </goals>
-                                <configuration>
-                                    <excludes>
-                                        <exclude>**/*LiveTest.java</exclude>
-                                        <exclude>**/*IntegrationTest.java</exclude>
-                                        <exclude>**/*IntTest.java</exclude>
-                                    </excludes>
-                                    <includes>
-                                        <include>**/AutoconfigurationTest.java</include>
-                                    </includes>
-                                </configuration>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <systemPropertyVariables>
-                                <test.mime>json</test.mime>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
 
 </project>
