@@ -5,6 +5,11 @@ import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *  POJO = Plain Old Java Object for Student
+ * 
+ * */
+
 public class Student implements Comparable<Student> {
     private String first;
     private String last;
@@ -150,5 +155,8 @@ public class Student implements Comparable<Student> {
         }
         return result;
     }
+
+
+
 
 }

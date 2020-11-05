@@ -5,12 +5,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import edu.ucsb.cs156.student.Student;
+
 import java.util.Objects;
+
+/** Object for storing a single Student into a table
+ * of Students in a relational database (SQL)
+ */
 
 @Entity
 public class StudentEntity {
 
     /* generated id value; always use this */
+    /* Wrapper class Long wraps long */
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,6 +47,13 @@ public class StudentEntity {
         this.last = last;
         this.perm = perm;
         this.units = units;
+    }
+
+    public StudentEntity(Student s) {
+        this.first = s.getFirst();
+        this.last = s.getLast();
+        this.perm = s.getPerm();
+        this.units = s.getUnits();
     }
 
     public Long getId() {
