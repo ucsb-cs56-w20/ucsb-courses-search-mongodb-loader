@@ -11,16 +11,16 @@ import org.springframework.boot.WebApplicationType;
 // Bulk of code is from: https://www.baeldung.com/spring-boot-console-app
 
 @SpringBootApplication
-public class SpringConsoleApplication implements CommandLineRunner  {
+public class Main implements CommandLineRunner  {
 
-	private static Logger LOG = LoggerFactory.getLogger(SpringConsoleApplication.class);
+	private static Logger LOG = LoggerFactory.getLogger(Main.class);
 
     public static void main(String [] args) {
         LOG.info("STARTING THE APPLICATION");
 
         // For not starting webserver, see: https://www.baeldung.com/spring-boot-no-web-server
 
-        SpringApplication app = new SpringApplication(SpringConsoleApplication.class);
+        SpringApplication app = new SpringApplication(Main.class);
         app.setWebApplicationType(WebApplicationType.NONE);
         app.setBannerMode(Banner.Mode.OFF);
         app.run(args);
