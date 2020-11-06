@@ -7,9 +7,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-import edu.ucsb.cs156.spring.repositories.StudentRepository;
-import edu.ucsb.cs156.spring.entities.StudentEntity;
+import edu.ucsb.cs156.spring.repositories.StudentMongoRepository;
+import edu.ucsb.cs156.spring.documents.StudentDocument;
 
 import edu.ucsb.cs156.student.Student;
 
@@ -34,13 +35,14 @@ import java.util.ArrayList;
 // @EntityScan("edu.ucsb.cs156.spring")
 
 
+@EnableMongoRepositories
 @SpringBootApplication
 public class Main implements CommandLineRunner  {
 
 	private static Logger LOG = LoggerFactory.getLogger(Main.class);
 
     @Autowired
-    StudentRepository studentRepository;
+    StudentMongoRepository studentMongoRepository;
 
     public static void main(String [] args) {
         LOG.info("STARTING THE APPLICATION");
@@ -81,23 +83,27 @@ public class Main implements CommandLineRunner  {
         ArrayList<Student> students = Student.linesToStudents(allLines);
 
 		System.out.println("Students from file: ");
-		Student.listStudents(students);
+        Student.listStudents(students);
+        
+        // Student first = students.get(0);
+        // StudentDocument sd = new StudentDocument(first);
+        // studentMongoRepository.save(sd);
 
-        storeStudents(students,studentRepository);
+        storeStudents(students,studentMongoRepository);
 
-        Iterable<StudentEntity> seList = studentRepository.findAll();
+        List<StudentDocument> sdList = studentMongoRepository.findAll();
 
-        System.out.println("Students from database: ");
-        for (StudentEntity se: seList) {
-            System.out.println(se);
+        System.out.println("Students from MongoDB Collection: ");
+        for (StudentDocument sd: sdList) {
+            System.out.println(sd);
         }
 
     }
     
-    public void storeStudents(List<Student> students, StudentRepository sr) {
+    public void storeStudents(List<Student> students, StudentMongoRepository smr) {
         for (Student s: students) {
-            StudentEntity se = new StudentEntity(s);
-            sr.save(se);
+            StudentDocument sd = new StudentDocument(s);
+            smr.save(sd);
         }
     }
 
