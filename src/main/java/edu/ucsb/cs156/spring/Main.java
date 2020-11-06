@@ -9,14 +9,23 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-import edu.ucsb.cs156.spring.repositories.StudentMongoRepository;
-import edu.ucsb.cs156.spring.documents.StudentDocument;
-
-import edu.ucsb.cs156.student.Student;
+import edu.ucsb.cs156.spring.repositories.ArchivedCourseRepository;
+import edu.ucsb.cs156.spring.services.UCSBAcademicCurriculumService;
+import edu.ucsb.cs156.ucsbapi.academics.curriculums.v1.classes.Course;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.boot.WebApplicationType;
+
+import org.springframework.context.annotation.PropertySource;
+import com.mongodb.util.JSON;
+import com.mongodb.DBCollection;
+import com.mongodb.client.MongoCollection;
+import org.bson.Document;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import javax.annotation.PostConstruct;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,7 +43,7 @@ import java.util.ArrayList;
 // @EnableJpaRepositories("edu.ucsb.cs156.spring")
 // @EntityScan("edu.ucsb.cs156.spring")
 
-
+@PropertySource("file:secrets-localhost.properties")
 @EnableMongoRepositories
 @SpringBootApplication
 public class Main implements CommandLineRunner  {
@@ -42,7 +51,17 @@ public class Main implements CommandLineRunner  {
 	private static Logger LOG = LoggerFactory.getLogger(Main.class);
 
     @Autowired
-    StudentMongoRepository studentMongoRepository;
+    ArchivedCourseRepository acr;
+
+    // @Autowired MongoTemplate mongoTemplate;
+    // MongoCollection<Document> collection;
+    // @PostConstruct
+    // public void init(){
+    //     collection = mongoTemplate.getCollection("courses");
+    // }
+
+    @Autowired
+    UCSBAcademicCurriculumService ucs;
 
     public static void main(String [] args) {
         LOG.info("STARTING THE APPLICATION");
@@ -68,49 +87,42 @@ public class Main implements CommandLineRunner  {
 			System.exit(1);
 		}
 
-		String filename = args[0];
+        Mongo mongo = new Mongo("localhost", 27017);
+        DB db = mongo.getDB("database");
+        DBCollection collection = db.getCollection("courses");
 
-        List<String> allLines = null;
 
-        try {
-            allLines = Files.readAllLines(Paths.get(filename));
-        } catch (IOException e) {
-            System.err.println("ERROR: could not open file " + filename);
-            System.err.println(e);
-            System.exit(2);
-        }
-
-        ArrayList<Student> students = Student.linesToStudents(allLines);
-
-		System.out.println("Students from file: ");
-        Student.listStudents(students);
-        
-        // Student first = students.get(0);
-        // StudentDocument sd = new StudentDocument(first);
-        // studentMongoRepository.save(sd);
-
-        storeStudents(students,studentMongoRepository);
-
-        List<StudentDocument> sdList = studentMongoRepository.findAll();
-
-        System.out.println("Students from MongoDB Collection: ");
-        for (StudentDocument sd: sdList) {
-            System.out.println(sd);
-        }
-
-    }
-    
-    public void storeStudents(List<Student> students, StudentMongoRepository smr) {
-        for (Student s: students) {
-            StudentDocument sd = new StudentDocument(s);
-            smr.save(sd);
+        String yyyyq = args[0];
+        int pagesize = 100;
+        int numpages = ucs.getNumberPages(yyyyq, pagesize);
+        System.out.println("numpages = " + numpages);
+        for(int i = 0; i < numpages; i++){
+            String json = ucs.getJSON(i, pagesize, yyyyq);
+            CoursePage cp = CoursePage.fromJSON(json);
+            for(Course c : cp.getClasses()){
+                acr.save(c);
+            }
         }
     }
 
 	public void usage() {
-		System.err.println("Usage: java -jar jarfile inputfile ");
-		System.err.println("  where inputfile contains student data in .csv format");
-	}
+		System.err.println("Usage: java -jar jarfile yyyyq ");
+		System.err.println("  where yyyyq is the quarter to be updated");
+    }
+
+    public void updateCourse(Course c){
+        Query query = new Query();
+        query.addCriteria(Criteria.where("courseId").is(c.getCourseId()));
+        query.addCriteria(Criteria.where("quarter").is(c.getQuarter()));
+
+        Update update = new Update();
+        //
+
+        mongoOperation.upsert(query, update, Course.class);
+
+        Course courseTest = mongoOperation.findOne(query, Course.class);
+        System.out.println("courseTest - " + courseTest);
+    }
 
 
 }
